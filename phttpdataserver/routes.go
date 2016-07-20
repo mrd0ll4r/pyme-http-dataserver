@@ -13,6 +13,11 @@ import (
 )
 
 func (s *httpDataServer) handlePut(w http.ResponseWriter, r *http.Request, p httprouter.Params) (int, error) {
+	if s.testMode {
+		io.Copy(ioutil.Discard, r.Body)
+		return http.StatusOK, nil
+	}
+
 	path := p.ByName("path")
 	if strings.Contains(path, "..") {
 		return http.StatusForbidden, errors.New("disallowed path")

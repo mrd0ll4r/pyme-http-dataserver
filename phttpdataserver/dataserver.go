@@ -20,20 +20,22 @@ type HTTPDataServer interface {
 }
 
 type httpDataServer struct {
-	r     *httprouter.Router
-	wd    string
-	port  int
-	doLog bool
+	r        *httprouter.Router
+	wd       string
+	port     int
+	doLog    bool
+	testMode bool
 }
 
 // New creates a new HTTPDataServer using the port and working directory
 // specified.
-func New(port int, workingDirectory string, doLog bool) HTTPDataServer {
+func New(port int, workingDirectory string, doLog, testMode bool) HTTPDataServer {
 	toReturn := &httpDataServer{
-		r:     httprouter.New(),
-		wd:    workingDirectory,
-		port:  port,
-		doLog: doLog,
+		r:        httprouter.New(),
+		wd:       workingDirectory,
+		port:     port,
+		doLog:    doLog,
+		testMode: testMode,
 	}
 
 	toReturn.r.PUT("/*path", toReturn.makeHandler(noResultHandler(toReturn.handlePut)))
