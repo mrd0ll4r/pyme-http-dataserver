@@ -58,7 +58,7 @@ func (s *httpDataServer) handlePut(w http.ResponseWriter, r *http.Request, p htt
 func (s *httpDataServer) handleGet(w http.ResponseWriter, r *http.Request, p httprouter.Params) (int, interface{}, error) {
 	path := p.ByName("path")
 	if strings.Contains(path, "..") {
-		return http.StatusForbidden, errors.New("disallowed path")
+		return http.StatusForbidden, nil, errors.New("disallowed path")
 	}
 	path = filepath.Join(s.wd, path)
 
@@ -76,7 +76,7 @@ func (s *httpDataServer) handleGet(w http.ResponseWriter, r *http.Request, p htt
 func (s *httpDataServer) handleGetFile(w http.ResponseWriter, r *http.Request, p httprouter.Params) (int, interface{}, error) {
 	path := p.ByName("path")
 	if strings.Contains(path, "..") {
-		return http.StatusForbidden, errors.New("disallowed path")
+		return http.StatusForbidden, nil, errors.New("disallowed path")
 	}
 	path = filepath.Join(s.wd, path)
 
@@ -96,7 +96,7 @@ func (s *httpDataServer) handleGetFile(w http.ResponseWriter, r *http.Request, p
 func (s *httpDataServer) handleGetDirectory(w http.ResponseWriter, r *http.Request, p httprouter.Params) (int, interface{}, error) {
 	path := p.ByName("path")
 	if strings.Contains(path, "..") {
-		return http.StatusForbidden, errors.New("disallowed path")
+		return http.StatusForbidden, nil, errors.New("disallowed path")
 	}
 	path = filepath.Join(s.wd, path)
 
