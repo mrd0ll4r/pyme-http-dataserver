@@ -11,6 +11,7 @@ import (
 var (
 	port    int
 	workDir string
+	doLog   bool
 )
 
 func init() {
@@ -20,6 +21,7 @@ func init() {
 	}
 	flag.IntVar(&port, "p", 8000, "port to listen on")
 	flag.StringVar(&workDir, "wd", wd, "working directory (to put files)")
+	flag.BoolVar(&doLog, "l", true, "write request logs")
 }
 
 func main() {
@@ -28,6 +30,6 @@ func main() {
 		workDir = "."
 	}
 
-	phds := phttpdataserver.New(port, workDir)
+	phds := phttpdataserver.New(port, workDir, doLog)
 	log.Fatal(phds.Run())
 }

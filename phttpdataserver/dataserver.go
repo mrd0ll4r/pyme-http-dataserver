@@ -20,18 +20,20 @@ type HTTPDataServer interface {
 }
 
 type httpDataServer struct {
-	r    *httprouter.Router
-	wd   string
-	port int
+	r     *httprouter.Router
+	wd    string
+	port  int
+	doLog bool
 }
 
 // New creates a new HTTPDataServer using the port and working directory
 // specified.
-func New(port int, workingDirectory string) HTTPDataServer {
+func New(port int, workingDirectory string, doLog bool) HTTPDataServer {
 	toReturn := &httpDataServer{
-		r:    httprouter.New(),
-		wd:   workingDirectory,
-		port: port,
+		r:     httprouter.New(),
+		wd:    workingDirectory,
+		port:  port,
+		doLog: doLog,
 	}
 
 	toReturn.r.PUT("/*path", toReturn.makeHandler(noResultHandler(toReturn.handlePut)))
@@ -65,9 +67,13 @@ type response struct {
 }
 
 func (s *httpDataServer) makeHandler(inner ResponseFunc) httprouter.Handle {
+	handler := recoverHandler(inner)
+	if s.doLog {
+		handler = logHandler(handler)
+	}
+
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		//resp := response{}
-		handler := logHandler(recoverHandler(inner))
 
 		status, result, err := handler(w, r, p)
 		/*if err != nil {
